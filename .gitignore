@@ -135,6 +135,11 @@ dist
 .pnp.*
 
 
+/src/styles/styles.css
+
+
+
+----------------------------------
 .android/adbkey
 .android/adbkey.pub
 .android/analytics.settings

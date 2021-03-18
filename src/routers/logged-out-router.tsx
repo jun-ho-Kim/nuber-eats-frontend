@@ -1,51 +1,57 @@
 import React, { useState } from "react";
-import { isLoggedInVar } from "../apollo";
+import { useForm } from "react-hook-form";
+
+interface IForm {
+    email: string;
+    password: string;
+}
 
 export const LoggedOutRouter = () => {
-    const onClick = () => {
-        isLoggedInVar(true);
-    }
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const {register, watch, handleSubmit, errors} = useForm<IForm>();
     
     const onSubmit = (event: any) => {
-        console.log("submit resule: ", event)
-    } 
-
-    const onChange = (event: any) => {
-        const {target: 
-            {name, value} 
-        } = event;
-        if(name === "email") {
-            setEmail(value)
-        }
-        if(name === "password") {
-            setPassword(value)
-        }
+        console.log(watch)
+    };
+    const onInvalid = () => {
+        console.log("can`t create account")
     }
+
     return (
         <div>
             <h1>Logged out</h1>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
             <div>
                 <input 
-                    onChange={onChange}
+                    ref={register({
+                        required: "This is required",
+                        pattern: /^[A-Za-z0-9._%+-]+@gmail.com$/,
+                    })}
                     name="email"
                     type="email"
                     required
                     placeholder="email"
-                    value={email}
                 />
+                {errors.email?.message && (
+                <span className="font-bold text-red-600">
+                    {errors.email?.message} 
+                </span>
+                )}
+                {errors.email?.type === "pattern" && (
+                <span className="font-bold text-red-600">Only gmail allowed</span>
+                )}
+            </div>
+            <div>
                 <input
-                    onChange={onChange}
+                    ref={register({
+                        required: true
+                    })}
                     name="password"
                     type="password"
                     required
                     placeholder="password"
-                    value={password}
                 />
-                <button className="bg-yellow-300 text-white">Submit</button>
             </div>
+                <button className="bg-yellow-300 text-white">Submit</button>
             </form>
         </div>
     )

@@ -1,15 +1,38 @@
+import { gql, useMutation } from "@apollo/client";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { FormError } from "../components/form-error";
+import { loginMutation, loginMutationVariables, loginMutation_login } from "../__generated__/loginMutation";
 
+const LOGIN_MUTATION = gql`
+    mutation loginMutation($email: String!, $password: String!){
+    # mutaion PotatoMutation() 이 부분은 오직 Apollo만을 위한 것이다.
+    # Apollo는 변수들을 살펴 볼 것이고 우리가 준 변수들을 가지고 mutation을 만들 것이다.
+    # $표시는 변수라는 뜻이다. apollo 변수이다.
+        login(input: {email: $email, password: $password}) {
+        #이제 backend에 하듯이 적어주자. playground와 적는 방식이 같다.
+            ok
+            token
+            error
+        }
+    }
+`;
 interface ILoginForm {
-    email?: string;
-    password?: string;
+    email: string;
+    password: string;
 }
 
 export const Login = () => {
     const {register, getValues, errors, handleSubmit} = useForm<ILoginForm>()
+    const [loginMutation, {data}] = useMutation<loginMutation, loginMutationVariables>(LOGIN_MUTATION)
     const onSubmit = () => {
         console.log("get Value:", getValues())
+        loginMutation({
+            variables: {
+                email,
+                password,
+            }
+        })
     };
     return (
         <div className="h-screen flex items-center justify-center bg-gray-800">
@@ -28,9 +51,7 @@ export const Login = () => {
                         className="input"
                     />
                     {errors.email?.message && (
-                        <span className="font-medium text-red-500">
-                            {errors.email?.message}
-                        </span>
+                        <FormError errorMessage={errors.email?.message} />
                     )}
                     <input
                         ref={register({required: "Password is require", minLength: 10})}
@@ -40,15 +61,11 @@ export const Login = () => {
                         placeholder="Password"
                         className="input"
                     />
-                    {errors.password?.type === "minLenth" && (
-                        <span className="font-medium text-red-500">
-                            Password must be more than 10 chars.
-                        </span>
+                    {errors.password?.message === "minLenth" && (
+                        <FormError errorMessage={errors.password?.message} />
                     )}
-                    {errors.password?.message && (
-                        <span className="font-medium text-red-500">
-                            {errors.password?.message}
-                        </span>
+                    {errors.password?.type === "minLength" && (
+                        <FormError errorMessage="Password must be more than 10 chars." />
                     )}
                     <button className="mt-3 btn">
                         Log In

@@ -26,6 +26,7 @@
     "tailwind:build": "tailwind build ./src/styles/tailwind.css -o ./src/styles/styles.css",
     "start": "npm run tailwind:build & react-scripts start",
     "build": "react-scripts build",
+    "apollo:codegen": "apollo client:codegen src/__generated__ --target=typescript --outputFlat",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

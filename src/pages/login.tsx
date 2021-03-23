@@ -5,35 +5,52 @@ import { FormError } from "../components/form-error";
 import { loginMutation, loginMutationVariables, loginMutation_login } from "../__generated__/loginMutation";
 
 const LOGIN_MUTATION = gql`
-    mutation loginMutation($email: String!, $password: String!){
-    # mutaion PotatoMutation() 이 부분은 오직 Apollo만을 위한 것이다.
-    # Apollo는 변수들을 살펴 볼 것이고 우리가 준 변수들을 가지고 mutation을 만들 것이다.
-    # $표시는 변수라는 뜻이다. apollo 변수이다.
-        login(input: {email: $email, password: $password}) {
-        #이제 backend에 하듯이 적어주자. playground와 적는 방식이 같다.
+    mutation loginMutation($loginInput: LoginInput){
+        login(input: $loginInput) {
+            #backend에 InputType을 사용
             ok
             token
             error
         }
     }
 `;
+
 interface ILoginForm {
     email: string;
     password: string;
-}
+};
+
+const onCompleted = (data: loginMutation) => {
+    const {
+        login: { error, ok, token }
+    } = data;
+    if(ok) {
+        console.log(token);
+    }
+};
+const onError = () => {};
 
 export const Login = () => {
-    const {register, getValues, errors, handleSubmit} = useForm<ILoginForm>()
-    const [loginMutation, {data}] = useMutation<loginMutation, loginMutationVariables>(LOGIN_MUTATION)
+    const {register, getValues, watch, errors, handleSubmit} = useForm<ILoginForm>()
+    const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
+        loginMutation, 
+        loginMutationVariables
+    >(LOGIN_MUTATION, {
+        onCompleted,
+        onError,
+        variables: {
+            loginInput: {
+                email: watch("email"),
+                password: watch("password"),
+            },
+        },
+    });
     const onSubmit = () => {
-        console.log("get Value:", getValues())
-        loginMutation({
-            variables: {
-                email,
-                password,
-            }
-        })
-    };
+        if(!loading) {
+            loginMutation()
+        }
+    }
+
     return (
         <div className="h-screen flex items-center justify-center bg-gray-800">
             <div className="bg-white w-full max-w-lg pt-10 pb-7 rounded-lg text-center">
@@ -68,8 +85,11 @@ export const Login = () => {
                         <FormError errorMessage="Password must be more than 10 chars." />
                     )}
                     <button className="mt-3 btn">
-                        Log In
+                        {loading? "Loading..." : "Log In"}
                     </button>
+                    {loginMutationResult?.login.error && (
+                        <FormError errorMessage={loginMutationResult.login.error} />
+                    )} 
                 </form>
             </div>
         </div>

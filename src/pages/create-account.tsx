@@ -1,5 +1,9 @@
 import React from "react";
 
 export const CreateAccount = () => {
-    return <span>Create Account</span>
-};
+    return (
+        <div>
+            <span>Create Account</span>
+        </div>
+    )
+}

@@ -3,13 +3,14 @@ import React from "react";
 import nuberLogo from "../images/logo.svg"
 import { useForm } from "react-hook-form";
 import { FormError } from "../components/form-error";
-import { loginMutation, loginMutationVariables, loginMutation_login } from "../__generated__/loginMutation";
+import { loginMutation, loginMutationVariables } from "../__generated__/loginMutation";
 import { Button } from "../components/button";
 import { Link } from "react-router-dom";
-
+import Helmet from "react-helmet";
+import { isLoggedInVar } from "../apollo";
 
 const LOGIN_MUTATION = gql`
-    mutation loginMutation($loginInput: LoginInput){
+    mutation loginMutation($loginInput: LoginInput!){
         login(input: $loginInput) {
             #backend에 InputType을 사용
             ok
@@ -24,26 +25,30 @@ interface ILoginForm {
     password: string;
 };
 
-const onCompleted = (data: loginMutation) => {
-    const {
-        login: { error, ok, token }
-    } = data;
-    if(ok) {
-        console.log(token);
-    }
-};
-const onError = () => {};
 
 export const Login = () => {
     const {register, getValues, watch, errors, handleSubmit, formState} = useForm<ILoginForm>({
         mode: "onChange"
     })
+    const onCompleted = (data: loginMutation) => {
+        const {
+            login: { error, ok, token }
+        } = data;
+        try {
+            if(ok) {
+                console.log(token);
+                isLoggedInVar(true);
+            }
+        } catch(error) {
+            console.log(error)
+        }
+    };
+    const onError = () => {};
     const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
         loginMutation, 
         loginMutationVariables
     >(LOGIN_MUTATION, {
         onCompleted,
-        onError,
         variables: {
             loginInput: {
                 email: watch("email"),
@@ -52,13 +57,16 @@ export const Login = () => {
         },
     });
     const onSubmit = () => {
-        if(!loading) {
-            loginMutation()
-        }
-    }
+        const { email, password } = getValues();
+        loginMutation();
+      
+    };
 
     return (
         <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
+            <Helmet>
+                <title>login | Nuber Eeats</title>
+            </Helmet>
             <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
                 <img src={nuberLogo} className="w-52 mb-10" />
                 <h4 className="w-full font-medium text-left text-3xl mb-5">
@@ -69,7 +77,10 @@ export const Login = () => {
                     className="grid gap-3 mt-5 w-full mb-5"
                 >
                     <input
-                        ref={register({ required: "Email is required "})}
+                        ref={register({ 
+                            required: "Email is required",
+                            pattern : /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                        })}
                         name="email"
                         required
                         type="email"
@@ -79,8 +90,11 @@ export const Login = () => {
                     {errors.email?.message && (
                         <FormError errorMessage={errors.email?.message} />
                     )}
+                    {errors.email?.type === "pattern" && (
+                        <FormError errorMessage={"Please enter a valid email"} />
+                    )}
                     <input
-                        ref={register({required: "Password is require", minLength: 10})}
+                        ref={register({required: "Password is require"})}
                         required
                         name="password"
                         type="password"
@@ -107,7 +121,6 @@ export const Login = () => {
                     <Link to="/create-account" className="text-emerald-600 hover:underline">
                         Create Account
                     </Link>
-
                 </div>
             </div>
         </div>

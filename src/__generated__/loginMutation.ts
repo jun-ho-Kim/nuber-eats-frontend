@@ -21,5 +21,5 @@ export interface loginMutation {
 }
 
 export interface loginMutationVariables {
-  loginInput?: LoginInput | null;
+  loginInput: LoginInput;
 }

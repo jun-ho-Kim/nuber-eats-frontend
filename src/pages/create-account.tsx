@@ -30,9 +30,8 @@ export const CreateAccount = () => {
     const {
         register, 
         getValues,
-        watch, 
         handleSubmit, 
-        errors, 
+        errors,
         formState,
     } = useForm<ICreateAccountForm>({
         mode: "onChange",
@@ -43,11 +42,11 @@ export const CreateAccount = () => {
     const history = useHistory();
     const onCompleted = (data: createAccountMutation) => {
         const {
-            createAccount : {ok, error}
+            createAccount : {ok}
         } = data;
         if(ok) {
             alert("Account Created Log in now!");
-            history.push("/login");
+            history.push("/");
         }
     }
 

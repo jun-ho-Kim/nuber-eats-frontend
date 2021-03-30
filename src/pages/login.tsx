@@ -33,10 +33,10 @@ export const Login = () => {
     })
     const onCompleted = (data: loginMutation) => {
         const {
-            login: { error, ok, token }
+            login: { ok, token }
         } = data;
         try {
-            if(token) {
+            if(ok && token) {
                 console.log(token);
                 localStorage.setItem(LOCALSTORAGE_TOKEN, token);
                 authTokenVar(token);
@@ -46,7 +46,6 @@ export const Login = () => {
             console.log(error)
         }
     };
-    const onError = () => {};
     const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
         loginMutation, 
         loginMutationVariables
@@ -60,9 +59,7 @@ export const Login = () => {
         },
     });
     const onSubmit = () => {
-        const { email, password } = getValues();
-        loginMutation();
-      
+        loginMutation();   
     };
 
     return (
@@ -104,7 +101,7 @@ export const Login = () => {
                         placeholder="Password"
                         className="input"
                     />
-                    {errors.password?.message === "minLenth" && (
+                    {errors.password?.message && (
                         <FormError errorMessage={errors.password?.message} />
                     )}
                     {errors.password?.type === "minLength" && (

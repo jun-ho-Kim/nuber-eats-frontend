@@ -33,7 +33,7 @@ export const ConfirmEmail = () => {
       });
     }
   };
-  const [VerifyEmail, {loading: verifyEmail}] = useMutation<
+  const [VerifyEmail] = useMutation<
   VerifyEmail,
   VerifyEmailVariables
   >(VERIFY_EMAIL_MUTATION, {
@@ -48,7 +48,7 @@ export const ConfirmEmail = () => {
           },
       },
     });
-  },[]);
+  },[VerifyEmail]);
   return (
       <div className="mt-52 flex flex-col items-center justify-center">
         <h2 className="text-lg mb-1 font-medium">Confirming email...</h2>

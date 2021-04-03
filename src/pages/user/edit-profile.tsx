@@ -1,5 +1,6 @@
 import { gql, useApolloClient, useMutation } from "@apollo/client";
 import React from "react";
+import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { Button } from "../../components/button";
@@ -36,7 +37,7 @@ export const EditProfile = () => {
         const {email: newEmail} = getValues();
         if(prevEmail !== newEmail) {
             client.writeFragment({
-                id: `User:${id}`,
+                id: `User:${+id}`,
                 fragment: gql`
                   fragment EditedUser on User {
                       email
@@ -77,6 +78,9 @@ export const EditProfile = () => {
   }
   return (
     <div className="mt-24 flex flex-col justify-center items-center">
+        <Helmet>
+            <title>Edit Profile | Nuber Eats</title>
+        </Helmet>
         <h4 className="font-semibold text-2xl mb-3">Edit-Profile</h4>
         <form 
             onSubmit={handleSubmit(onSubmit)}

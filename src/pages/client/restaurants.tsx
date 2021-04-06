@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import { Restaurant } from "../../components/restaurant";
 import { RESTAURANT_FRAGMENT } from "../../fragment";
 import {
@@ -87,18 +88,19 @@ export const Restaurants = () => {
                     {/* category */}
                     <div className="flex justify-around max-w-sm mx-auto">
                     {data?.allCategories.categories?.map((category) => (
-                    <div
-                        key={category.id}
-                        className="flex flex-col group items-center cursor-pointer">
+                    <Link key={category.id} to={`/category/${category.slug}`}>
                         <div 
-                            className="w-14 h-14 bg-cover group-hover:bg-gray-100 rounded-full bg-red-800"
-                            // style={}
-                        >
+                            className="flex flex-col group items-center cursor-pointer">
+                            <div 
+                                className="w-14 h-14 bg-cover group-hover:bg-gray-100 rounded-full bg-red-800"
+                                // style={}
+                            >
+                            </div>
+                            <span className="mt-1 text-sm text-center font-medium">
+                                {category.name}
+                            </span>
                         </div>
-                        <span className="mt-1 text-sm text-center font-medium">
-                            {category.name}
-                        </span>
-                    </div>
+                    </Link>
                     ))}
                     </div>
                     <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">

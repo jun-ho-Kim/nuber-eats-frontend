@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface IRestaurantProps {
     id: string;
@@ -8,11 +9,13 @@ interface IRestaurantProps {
 }
 
 export const Restaurant: React.FC<IRestaurantProps> = ({
+    id,
     coverImg,
     name,
     categoryName,
 }) => {
     return (
+        <Link to={`/restaurants/${id}`}>
             <div className="flex flex-col">
                 <div className="bg-red-500 py-28 m">
                 </div>
@@ -21,5 +24,6 @@ export const Restaurant: React.FC<IRestaurantProps> = ({
                     {categoryName}
                 </span>
             </div>
+        </Link>
     )
 }

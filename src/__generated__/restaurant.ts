@@ -36,5 +36,5 @@ export interface restaurant {
 }
 
 export interface restaurantVariables {
-  input?: RestaurantInput | null;
+  input: RestaurantInput;
 }

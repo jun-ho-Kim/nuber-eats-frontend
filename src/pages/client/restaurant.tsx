@@ -24,16 +24,15 @@ const RESTAURANT_QUERY = gql`
 `;
 
 interface IRestaurantParams {
-    id: string;
+    restaurantId: string;
 }
 
 export const Restaurant = () => {
-    const params = useParams();
-    console.log("params", params);
+    const {id} = useParams();
     const {data} = useQuery<restaurant, restaurantVariables>(RESTAURANT_QUERY, {
         variables: {
             input: {
-                restaurantId: +params.id, 
+                restaurantId: +id, 
             }
         }
     })

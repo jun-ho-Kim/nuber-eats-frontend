@@ -21,7 +21,7 @@ export const MY_RESTAURANTS_QUERY = gql`
 
 export const MyRestaurants = () => {
     const {data} = useQuery<myRestaurants>(MY_RESTAURANTS_QUERY);
-    console.log("myRestaurant:", data);
+    console.log("myRestaurants:", data);
     return (
         <div>
             <Helmet>

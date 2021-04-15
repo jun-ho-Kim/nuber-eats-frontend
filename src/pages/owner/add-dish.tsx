@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { useParams, useHistory } from "react-router-dom";
-import { isOptionalTypeNode } from "typescript";
 import { Button } from "../../components/button";
 import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
 

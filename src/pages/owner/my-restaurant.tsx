@@ -1,8 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
 import { Helmet } from "react-helmet";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Dish } from "../../components/dish";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragment";
 import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
@@ -29,7 +28,7 @@ interface IParams {
 }
 
 export const MyRestaurant = () => {
-    const {id} = useParams<IParams>();
+    const {id} = useParams();
     const { data } = useQuery<myRestaurant, myRestaurantVariables>(MY_RESTAURANT_QUERY, {
         variables: {
             input: {
@@ -37,6 +36,7 @@ export const MyRestaurant = () => {
             }
         }
     });
+    console.log("MyRestaurant Data", data?.myRestaurant.ok);
     return (
         <div>
             <Helmet>
@@ -45,7 +45,7 @@ export const MyRestaurant = () => {
             <div
                 className="bg-gray-700 py-28 bg-center bg-cover"
                 style={{
-                    backgroundImage: `url($(data?.myRestaurant.restaurant?.coverImg))`,
+                    backgroundImage: `url(${data?.myRestaurant.restaurant?.coverImg})`,
                 }}    
             >
             </div>
@@ -67,8 +67,9 @@ export const MyRestaurant = () => {
                         <h4 className="text-xl mb-5">Please upload a dish!</h4>
                     ): (
                         <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
-                            {data?.myRestaurant.restaurant?.menu.map((dish) => (
+                            {data?.myRestaurant.restaurant?.menu.map((dish, index) => (
                                 <Dish
+                                    key={index}
                                     name={dish.name}
                                     description={dish.description}
                                     price={dish.price}

@@ -50,8 +50,8 @@ const commonRoutes = [
 const restaurantRoutes = [
     {path: "/", component: <MyRestaurants />},
     {path: "/add-restaurant", component: <AddRestaurant />},
-    {path: "/my-restaurants/:id", component: <MyRestaurant />},
-    {path: "/my-restaurants/:restaurantId/add-dish", component: <AddDish />}
+    {path: "/restaurants/:id", component: <MyRestaurant />},
+    {path: "/restaurants/:restaurantId/add-dish", component: <AddDish />}
 ];
 
 
